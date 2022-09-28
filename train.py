@@ -1,4 +1,5 @@
 import random
+import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 import numpy as np
 import torch.utils.data
@@ -11,16 +12,18 @@ EPOCHS = 10000
 
 device = torch.device('cuda')
 
+#load the model
 model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained = True)
-
 in_features = model.roi_heads.box_predictor.cls_score.in_features
-
 model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes= 5)
 
+# load model on training device
 model.to(device)
 
+# set up optimization for the model training
 optimizer = torch.optim.AdamW(params= model.parameters(), lr=1e-5)
 
+# setting model to training mode
 model.train()
 
 for i in range(EPOCHS+1):
@@ -40,6 +43,7 @@ for i in range(EPOCHS+1):
     losses.backward()
     optimizer.step()
     
+    # every 1000 epochs save the state of the model
     if i%1000 == 0:
         torch.save(model.state_dict(), str(i)+".torch")
         print("Saved model to:", str(i)+".torch")
