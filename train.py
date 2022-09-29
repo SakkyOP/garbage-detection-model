@@ -1,12 +1,9 @@
-import random
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
-import numpy as np
 import torch.utils.data
-import cv2
 import torchvision.models.segmentation
 import torch
-from train import loadData
+from dataset import loadData
 
 EPOCHS = 10000
 
