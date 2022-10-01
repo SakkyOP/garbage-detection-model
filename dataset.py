@@ -41,7 +41,7 @@ def maskConverter(segmentation):
             temp_arr = []
             flag = 0
     
-    return  torch.tensor(mask)
+    return  mask
 
 
 def loadData():
@@ -68,17 +68,22 @@ def loadData():
         if sex['file_name'] == img:
             image_id = sex['id']
 
+    boxes = torch.zeros([1,4], dtype=torch.float32)
+    masks = []
     for sex in annotation['annotations']:
         if sex['image_id'] == image_id:
             mask = maskConverter(sex['segmentation'][0])
+            # !! Convert to polygons through open cv and then make the data accordingly.
+            masks.append(mask)
             x,y,w,h = sex['bbox']
-            bbox = torch.tensor([x,y,x+w,y+h])
+            boxes[0] = torch.tensor([x,y,x+w,y+h])
 
+    masks = torch.as_tensor(masks)
     label = annotation['info']['description']
 
     data = {}
-    data['boxes'] = torch.tensor([bbox,])
-    data['masks'] = torch.tensor([mask,])
+    data['boxes'] = boxes
+    data['masks'] = masks
     data['labels'] = torch.tensor(classes[label])
     
     batch_Imgs.append(image)
