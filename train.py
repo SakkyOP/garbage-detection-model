@@ -8,7 +8,7 @@ import torchvision
 
 EPOCHS = 2000
 
-device = torch.device('cuda')
+device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 #load the model
 model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained = True)
@@ -30,7 +30,7 @@ for i in range(EPOCHS+1):
     
     # loading images and targets to our proccessing device
     images = list(image.to(device) for image in images)
-    targets=[{k: v.to(device) for k,v in t.items()} for t in targets]
+    target=[{k: v.to(device) for k,v in t.items()} for t in target]
     
     # training starts here!
     optimizer.zero_grad()
