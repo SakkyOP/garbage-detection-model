@@ -4,8 +4,9 @@ import torch.utils.data
 import torchvision.models.segmentation
 import torch
 from dataset import loadData
+import torchvision
 
-EPOCHS = 10000
+EPOCHS = 2000
 
 device = torch.device('cuda')
 
